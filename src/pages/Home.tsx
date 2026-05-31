@@ -216,7 +216,7 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {fasilitas.map((f, i) => {
-                const Icon = iconMap[f.icon] || BadgeCheck
+                const Icon = (iconMap as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[f.icon] || BadgeCheck
                 return (
                   <ScrollReveal key={f.id} delay={i * 0.08}>
                     <div className="rounded-2xl p-5 text-center bg-gray-50 border border-gray-100 hover:border-violet-200 hover:bg-white hover:shadow-sm transition-all duration-300 group">
