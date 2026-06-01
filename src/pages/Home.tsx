@@ -82,15 +82,15 @@ export default function Home() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-amber-400 text-xs sm:text-sm mb-6 border border-white/20 shadow-sm mx-auto">
                 <MapPin size={14} />
-                <span>Orion Jaya Sport Center</span>
+                <span>Orion Sports Center</span>
               </div>
               
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 tracking-tight drop-shadow-md">
-                {heroSlides[currentSlide] ? heroSlides[currentSlide].judul : "Selamat Datang di Orion Jaya"}
+                {heroSlides[currentSlide] ? heroSlides[currentSlide].judul : "Selamat Datang di Orion Sports Center"}
               </h1>
               
               <p className="text-sm sm:text-lg text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow-sm font-light">
-                {heroSlides[currentSlide] ? heroSlides[currentSlide].subjudul : "Booking lapangan sekarang dan nikmati pengalaman olahraga terbaik bersama Orion Jaya"}
+                {heroSlides[currentSlide] ? heroSlides[currentSlide].subjudul : "Booking lapangan sekarang dan nikmati pengalaman olahraga terbaik bersama Orion Sports Center"}
               </p>
               
               <div className="flex flex-wrap gap-4 justify-center items-center">
@@ -282,7 +282,7 @@ export default function Home() {
             <div className="text-center mb-12">
               <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-3">Artikel & Berita</h2>
               <p className="text-sm sm:text-base text-gray-500 max-w-xl mx-auto">
-                Informasi terbaru seputar olahraga dan Orion Jaya
+                Informasi terbaru seputar olahraga dan Orion Sports Center
               </p>
             </div>
           </ScrollReveal>
@@ -343,7 +343,7 @@ export default function Home() {
                 Siap untuk Berolahraga?
               </h2>
               <p className="text-violet-100 mb-8 max-w-lg mx-auto text-sm sm:text-base leading-relaxed font-light">
-                Booking lapangan sekarang dan nikmati pengalaman olahraga terbaik bersama Orion Jaya dengan sistem yang cepat.
+                Booking lapangan sekarang dan nikmati pengalaman olahraga terbaik bersama Orion Sports Center dengan sistem yang cepat.
               </p>
               <Link
                 to="/booking"

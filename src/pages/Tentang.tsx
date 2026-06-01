@@ -35,13 +35,13 @@ export default function Tentang() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-violet-700 text-sm mb-6 border border-violet-200 shadow-sm">
-              <MapPin size={14} /> Tentang Orion Jaya
+              <MapPin size={14} /> Tentang Orion Sports Center
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
               Tempat Olahraga Terbaik untukmu
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-              Orion Jaya adalah pusat olahraga terkemuka yang menyediakan fasilitas lengkap untuk badminton, futsal, dan basket. 
+              Orion Sports Center adalah pusat olahraga terkemuka yang menyediakan fasilitas lengkap untuk badminton, futsal, dan basket. 
               Kami berkomitmen memberikan pengalaman olahraga terbaik bagi setiap pengunjung.
             </p>
           </ScrollReveal>
@@ -96,7 +96,7 @@ export default function Tentang() {
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Keunggulan Kami</h2>
               <p className="text-gray-500 max-w-xl mx-auto">
-                Mengapa memilih Orion Jaya untuk kegiatan olahragamu
+                Mengapa memilih Orion Sports Center untuk kegiatan olahragamu
               </p>
             </div>
           </ScrollReveal>

@@ -25,7 +25,7 @@ export default function GaleriPage() {
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Galeri</h1>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Lihat langsung kondisi lapangan dan fasilitas Orion Jaya
+              Lihat langsung kondisi lapangan dan fasilitas Orion Sports Center
             </p>
           </div>
         </ScrollReveal>

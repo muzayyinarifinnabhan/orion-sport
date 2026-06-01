@@ -12,7 +12,7 @@ function getShareUrl() {
 }
 
 function getShareText(judul: string) {
-  return `${judul} - Orion Jaya`
+  return `${judul} - Orion Sports Center`
 }
 
 export default function ShareButtons({ judul, konten }: ShareButtonsProps) {

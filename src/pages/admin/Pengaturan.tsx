@@ -45,7 +45,7 @@ export default function Pengaturan() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">Informasi Tempat</h2>
-            <p className="text-gray-500 text-sm">Kelola informasi profil Orion Jaya</p>
+            <p className="text-gray-500 text-sm">Kelola informasi profil Orion Sports Center</p>
           </div>
         </div>
 

@@ -27,7 +27,7 @@ export default function DetailArtikel() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: detailArtikel?.judul || 'Artikel Orion Jaya',
+          title: detailArtikel?.judul || 'Artikel Orion Sports Center',
           text: `Yuk baca artikel: "${detailArtikel?.judul}"`,
           url: window.location.href,
         })

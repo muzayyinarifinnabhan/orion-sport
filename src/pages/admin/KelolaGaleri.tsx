@@ -80,7 +80,7 @@ export default function KelolaGaleri() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">Kelola Galeri</h1>
-            <p className="text-sm text-gray-500">Atur gambar galeri Orion Jaya</p>
+            <p className="text-sm text-gray-500">Atur gambar galeri Orion Sports Center</p>
           </div>
         </div>
         <button onClick={openAdd} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-500 transition-all shadow-sm text-sm">

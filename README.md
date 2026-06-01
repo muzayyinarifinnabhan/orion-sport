@@ -1,4 +1,4 @@
-# Orion Jaya - Sistem Booking Lapangan Olahraga
+# Orion Sport Center - Sistem Booking Lapangan Olahraga
 
 Sistem booking lapangan olahraga modern dengan antarmuka yang responsif dan mudah digunakan. Dibangun untuk memudahkan pengguna dalam melakukan reservasi lapangan secara online.
 
@@ -181,4 +181,4 @@ Jika Anda memiliki pertanyaan atau masalah, silakan hubungi:
 
 ---
 
-Dibuat dengan ❤️ oleh Tim Orion Jaya
+Dibuat dengan ❤️ oleh Tim Orion Sports Center

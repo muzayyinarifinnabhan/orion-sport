@@ -1,5 +1,5 @@
 -- =============================================================
--- Orion Jaya Booking - Full Database Schema for Supabase
+-- Orion Sports Center Booking - Full Database Schema for Supabase
 -- =============================================================
 -- Jalankan SQL ini di Supabase SQL Editor (https://supabase.com/dashboard/project/_/sql/new)
 
@@ -94,7 +94,7 @@ alter table public.artikel enable row level security;
 -- Pengaturan (single row)
 create table if not exists public.pengaturan (
   id text primary key default 'default',
-  nama text not null default 'Orion Jaya',
+  nama text not null default 'Orion Sports Center',
   alamat text not null default '',
   telepon text not null default '',
   email text not null default '',
@@ -221,7 +221,7 @@ insert into public.galeri (id, gambar, judul, deskripsi, kategori, created_at) v
   ('g2', 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', 'Lapangan Futsal Rumput', 'Lapangan futsal dengan rumput sintetis berkualitas', 'Futsal', '2026-05-02'),
   ('g3', 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=600&q=80', 'Lapangan Futsal Vinyl', 'Lapangan futsal vinyl anti-slip', 'Futsal', '2026-05-03'),
   ('g4', 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=80', 'Lapangan Basket Indoor', 'Lapangan basket indoor dengan tribun penonton', 'Basket', '2026-05-04'),
-  ('g5', 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', 'Suasana Pertandingan', 'Suasana pertandingan olahraga di Orion Jaya', 'Event', '2026-05-05'),
+  ('g5', 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', 'Suasana Pertandingan', 'Suasana pertandingan olahraga di Orion Sports Center', 'Event', '2026-05-05'),
   ('g6', 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', 'Area Parkir Luas', 'Area parkir yang luas dan aman', 'Fasilitas', '2026-05-06'),
   ('g7', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', 'Musholla Nyaman', 'Musholla bersih untuk beribadah', 'Fasilitas', '2026-05-07'),
   ('g8', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80', 'Ruang Ganti & Loker', 'Ruang ganti dengan loker pengaman', 'Fasilitas', '2026-05-08')
@@ -230,18 +230,18 @@ on conflict (id) do nothing;
 -- Artikel
 insert into public.artikel (id, gambar, judul, konten, kategori, penulis, tanggal, created_at) values
   ('a1', 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80', 'Tips Memilih Raket Badminton untuk Pemula', 'Ingin mulai main badminton? Simak tips memilih raket yang tepat sesuai kebutuhan dan budget Anda.', 'Tips', 'Admin Orion', '25 Mei 2026', '2026-05-25'),
-  ('a2', 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', 'Jadwal Turnamen Futsal Orion Jaya 2026', 'Turnamen futsal antar komunitas akan digelar bulan depan. Daftarkan tim Anda sekarang!', 'Event', 'Admin Orion', '20 Mei 2026', '2026-05-20'),
+  ('a2', 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', 'Jadwal Turnamen Futsal Orion Sports Center 2026', 'Turnamen futsal antar komunitas akan digelar bulan depan. Daftarkan tim Anda sekarang!', 'Event', 'Admin Orion', '20 Mei 2026', '2026-05-20'),
   ('a3', 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=80', '5 Manfaat Bermain Basket untuk Kesehatan', 'Bukan hanya menyenangkan, bermain basket juga punya segudang manfaat bagi tubuh Anda.', 'Kesehatan', 'Admin Orion', '15 Mei 2026', '2026-05-15'),
   ('a4', 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=600&q=80', 'Promo Spesial: Diskon 20% Booking Weekday', 'Nikmati diskon 20% untuk setiap booking lapangan di hari Senin sampai Kamis.', 'Promo', 'Admin Orion', '10 Mei 2026', '2026-05-10'),
   ('a5', 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', 'Cara Meningkatkan Stamina saat Bermain Futsal', 'Ikuti tips-tips berikut agar stamina Anda tetap prima selama pertandingan futsal.', 'Tips', 'Admin Orion', '5 Mei 2026', '2026-05-05'),
-  ('a6', 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', 'Kompetisi Basket Antar SMA se-Jakarta', 'Orion Jaya menjadi tuan rumah kompetisi basket antar SMA yang akan digelar bulan Juni.', 'Event', 'Admin Orion', '28 April 2026', '2026-04-28'),
+  ('a6', 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', 'Kompetisi Basket Antar SMA se-Jakarta', 'Orion Sports Center menjadi tuan rumah kompetisi basket antar SMA yang akan digelar bulan Juni.', 'Event', 'Admin Orion', '28 April 2026', '2026-04-28'),
   ('a7', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80', 'Program Latihan Badminton untuk Pemula', 'Ikuti program latihan badminton 4 minggu yang dirancang khusus untuk pemula.', 'Latihan', 'Admin Orion', '20 April 2026', '2026-04-20'),
   ('a8', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', 'Cara Merawat Sepatu Olahraga', 'Tips merawat sepatu olahraga agar awet dan tetap nyaman digunakan.', 'Tips', 'Admin Orion', '15 April 2026', '2026-04-15')
 on conflict (id) do nothing;
 
 -- Pengaturan (single row)
 insert into public.pengaturan (id, nama, alamat, telepon, email, jam_buka, jam_tutup, jam_buka_weekend, jam_tutup_weekend, google_maps) values
-  ('default', 'Orion Jaya', 'Jl. Merdeka No. 123, Jakarta Pusat', '+62 812-3456-7890', 'info@orionjaya.com', '08:00', '22:00', '08:00', '23:00', '')
+  ('default', 'Orion Sports Center', 'Jl. Merdeka No. 123, Jakarta Pusat', '+62 812-3456-7890', 'info@orionjaya.com', '08:00', '22:00', '08:00', '23:00', '')
 on conflict (id) do nothing;
 
 -- Slider

@@ -24,7 +24,7 @@ export default function ArtikelPage() {
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Artikel & Berita</h1>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Informasi terbaru seputar olahraga dan Orion Jaya
+              Informasi terbaru seputar olahraga dan Orion Sports Center. Dapatkan tips, event, dan promo menarik untuk meningkatkan performa olahraga Anda.
             </p>
           </div>
         </ScrollReveal>

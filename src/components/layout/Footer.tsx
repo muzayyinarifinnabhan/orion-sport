@@ -11,9 +11,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/logo.png" alt="Orion Jaya" className="h-9 w-auto" />
+              <img src="/logo.png" alt="Orion Sports Center" className="h-9 w-auto" />
               <span className="text-xl font-bold text-gray-900">
-                Orion <span className="text-black">Jaya</span>
+                Orion <span className="text-black">Sports Center</span>
               </span>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed">

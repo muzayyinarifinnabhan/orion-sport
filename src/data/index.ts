@@ -148,7 +148,7 @@ export const galeriData: Galeri[] = [
   { id: 'g2', gambar: 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', judul: 'Lapangan Futsal Rumput', deskripsi: 'Lapangan futsal dengan rumput sintetis berkualitas', kategori: 'Futsal', createdAt: '2026-05-02' },
   { id: 'g3', gambar: 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=600&q=80', judul: 'Lapangan Futsal Vinyl', deskripsi: 'Lapangan futsal vinyl anti-slip', kategori: 'Futsal', createdAt: '2026-05-03' },
   { id: 'g4', gambar: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=80', judul: 'Lapangan Basket Indoor', deskripsi: 'Lapangan basket indoor dengan tribun penonton', kategori: 'Basket', createdAt: '2026-05-04' },
-  { id: 'g5', gambar: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', judul: 'Suasana Pertandingan', deskripsi: 'Suasana pertandingan olahraga di Orion Jaya', kategori: 'Event', createdAt: '2026-05-05' },
+  { id: 'g5', gambar: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', judul: 'Suasana Pertandingan', deskripsi: 'Suasana pertandingan olahraga di Orion Sports Center', kategori: 'Event', createdAt: '2026-05-05' },
   { id: 'g6', gambar: 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', judul: 'Area Parkir Luas', deskripsi: 'Area parkir yang luas dan aman', kategori: 'Fasilitas', createdAt: '2026-05-06' },
   { id: 'g7', gambar: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', judul: 'Musholla Nyaman', deskripsi: 'Musholla bersih untuk beribadah', kategori: 'Fasilitas', createdAt: '2026-05-07' },
   { id: 'g8', gambar: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80', judul: 'Ruang Ganti & Loker', deskripsi: 'Ruang ganti dengan loker pengaman', kategori: 'Fasilitas', createdAt: '2026-05-08' },
@@ -156,11 +156,11 @@ export const galeriData: Galeri[] = [
 
 export const artikelData: Artikel[] = [
   { id: 'a1', gambar: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80', judul: 'Tips Memilih Raket Badminton untuk Pemula', konten: 'Ingin mulai main badminton? Simak tips memilih raket yang tepat sesuai kebutuhan dan budget Anda.', kategori: 'Tips', penulis: 'Admin Orion', tanggal: '25 Mei 2026', createdAt: '2026-05-25' },
-  { id: 'a2', gambar: 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', judul: 'Jadwal Turnamen Futsal Orion Jaya 2026', konten: 'Turnamen futsal antar komunitas akan digelar bulan depan. Daftarkan tim Anda sekarang!', kategori: 'Event', penulis: 'Admin Orion', tanggal: '20 Mei 2026', createdAt: '2026-05-20' },
+  { id: 'a2', gambar: 'https://images.unsplash.com/photo-1577415124269-fc1140af69b8?w=600&q=80', judul: 'Jadwal Turnamen Futsal Orion Sports Center 2026', konten: 'Turnamen futsal antar komunitas akan digelar bulan depan. Daftarkan tim Anda sekarang!', kategori: 'Event', penulis: 'Admin Orion', tanggal: '20 Mei 2026', createdAt: '2026-05-20' },
   { id: 'a3', gambar: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=80', judul: '5 Manfaat Bermain Basket untuk Kesehatan', konten: 'Bukan hanya menyenangkan, bermain basket juga punya segudang manfaat bagi tubuh Anda.', kategori: 'Kesehatan', penulis: 'Admin Orion', tanggal: '15 Mei 2026', createdAt: '2026-05-15' },
   { id: 'a4', gambar: 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=600&q=80', judul: 'Promo Spesial: Diskon 20% Booking Weekday', konten: 'Nikmati diskon 20% untuk setiap booking lapangan di hari Senin sampai Kamis.', kategori: 'Promo', penulis: 'Admin Orion', tanggal: '10 Mei 2026', createdAt: '2026-05-10' },
   { id: 'a5', gambar: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80', judul: 'Cara Meningkatkan Stamina saat Bermain Futsal', konten: 'Ikuti tips-tips berikut agar stamina Anda tetap prima selama pertandingan futsal.', kategori: 'Tips', penulis: 'Admin Orion', tanggal: '5 Mei 2026', createdAt: '2026-05-05' },
-  { id: 'a6', gambar: 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', judul: 'Kompetisi Basket Antar SMA se-Jakarta', konten: 'Orion Jaya menjadi tuan rumah kompetisi basket antar SMA yang akan digelar bulan Juni.', kategori: 'Event', penulis: 'Admin Orion', tanggal: '28 April 2026', createdAt: '2026-04-28' },
+  { id: 'a6', gambar: 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', judul: 'Kompetisi Basket Antar SMA se-Jakarta', konten: 'Orion Sports Center menjadi tuan rumah kompetisi basket antar SMA yang akan digelar bulan Juni.', kategori: 'Event', penulis: 'Admin Orion', tanggal: '28 April 2026', createdAt: '2026-04-28' },
   { id: 'a7', gambar: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80', judul: 'Program Latihan Badminton untuk Pemula', konten: 'Ikuti program latihan badminton 4 minggu yang dirancang khusus untuk pemula.', kategori: 'Latihan', penulis: 'Admin Orion', tanggal: '20 April 2026', createdAt: '2026-04-20' },
   { id: 'a8', gambar: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', judul: 'Cara Merawat Sepatu Olahraga', konten: 'Tips merawat sepatu olahraga agar awet dan tetap nyaman digunakan.', kategori: 'Tips', penulis: 'Admin Orion', tanggal: '15 April 2026', createdAt: '2026-04-15' },
 ]
@@ -168,7 +168,7 @@ export const artikelData: Artikel[] = [
 export const pesanData: Pesan[] = []
 
 export const pengaturanData: Pengaturan = {
-  nama: 'Orion Jaya',
+  nama: 'Orion Sports Center',
   alamat: 'Jl. Merdeka No. 123, Jakarta Pusat',
   telepon: '+62 812-3456-7890',
   email: 'info@orionjaya.com',
