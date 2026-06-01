@@ -21,6 +21,7 @@ import KelolaJadwal from './pages/admin/KelolaJadwal'
 import KelolaUser from './pages/admin/KelolaUser'
 import KelolaFasilitas from './pages/admin/KelolaFasilitas'
 import KelolaGaleri from './pages/admin/KelolaGaleri'
+import KelolaPembayaran from './pages/admin/KelolaPembayaran'
 import KelolaArtikel from './pages/admin/KelolaArtikel'
 import Laporan from './pages/admin/Laporan'
 import Pengaturan from './pages/admin/Pengaturan'
@@ -52,6 +53,7 @@ function App() {
             <Route path="user" element={<KelolaUser />} />
             <Route path="fasilitas" element={<KelolaFasilitas />} />
             <Route path="galeri" element={<KelolaGaleri />} />
+            <Route path="pembayaran" element={<KelolaPembayaran />} />
             <Route path="artikel" element={<KelolaArtikel />} />
             <Route path="pesan" element={<KelolaPesan />} />
             <Route path="slider" element={<KelolaSlider />} />

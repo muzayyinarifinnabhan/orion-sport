@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import type { Lapangan, Booking, User, Jadwal, Fasilitas, Galeri, Artikel, Pesan, Pengaturan, Slider } from '../types'
+import type { Lapangan, Booking, User, Jadwal, Fasilitas, Galeri, Artikel, Pesan, Pengaturan, Slider, PaymentMethod } from '../types'
 import { fetchAll } from '../lib/db'
 import { supabase } from '../lib/supabase'
+import { paymentMethodData } from '../data'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 interface AppContextType {
@@ -25,6 +26,8 @@ interface AppContextType {
   setPesan: (d: Pesan[]) => void
   slider: Slider[]
   setSlider: (d: Slider[]) => void
+  paymentMethods: PaymentMethod[]
+  setPaymentMethods: (d: PaymentMethod[]) => void
   loading: boolean
   supabase: SupabaseClient
   refreshAll: () => Promise<void>
@@ -48,6 +51,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   })
   const [pesan, setPesan] = useState<Pesan[]>([])
   const [slider, setSlider] = useState<Slider[]>([])
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(() => {
+    try {
+      const cached = localStorage.getItem('orion_payment_methods')
+      if (cached) return JSON.parse(cached) as PaymentMethod[]
+    } catch {}
+    return paymentMethodData
+  })
   const [loading, setLoading] = useState(true)
   const [adminUser, setAdminUser] = useState<User | null>(() => {
     try {
@@ -59,7 +69,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   async function refreshAll() {
     setLoading(true)
     try {
-      const [lapanganData, bookingData, usersData, jadwalData, fasilitasData, galeriData, artikelData, pesanData, sliderData] =
+      const [lapanganData, bookingData, usersData, jadwalData, fasilitasData, galeriData, artikelData, pesanData, sliderData, paymentMethodsData] =
         await Promise.all([
           fetchAll<Lapangan>('lapangan'),
           fetchAll<Booking>('booking'),
@@ -70,6 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           fetchAll<Artikel>('artikel'),
           fetchAll<Pesan>('pesan'),
           fetchAll<Slider>('slider'),
+          fetchAll<PaymentMethod>('payment_method'),
         ])
       setLapangan(lapanganData)
       setBooking(bookingData)
@@ -80,6 +91,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setArtikel(artikelData)
       setPesan(pesanData)
       setSlider(sliderData)
+      if (paymentMethodsData.length > 0) {
+        setPaymentMethods(paymentMethodsData)
+        localStorage.setItem('orion_payment_methods', JSON.stringify(paymentMethodsData))
+      }
 
       const { data: penData } = await supabase.from('pengaturan').select('*').eq('id', 'default').single()
       if (penData) {
@@ -109,7 +124,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       lapangan, setLapangan, booking, setBooking, users, setUsers,
       jadwal, setJadwal, fasilitas, setFasilitas, galeri, setGaleri, artikel, setArtikel,
-      pengaturan, setPengaturan, pesan, setPesan, slider, setSlider, loading, supabase, refreshAll,
+      pengaturan, setPengaturan, pesan, setPesan, slider, setSlider, paymentMethods, setPaymentMethods, loading, supabase, refreshAll,
       adminUser, setAdminUser: (u: User | null) => {
         setAdminUser(u)
         if (u) sessionStorage.setItem('orion_admin', JSON.stringify(u))

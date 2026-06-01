@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  LayoutDashboard, MapPin, Calendar, Clock, Users, Building2, Image, Newspaper, MessageSquare, BarChart3, Settings, Sliders,
+  LayoutDashboard, MapPin, Calendar, Clock, Users, Building2, Image, Newspaper, MessageSquare, BarChart3, Settings, Sliders, CreditCard,
   ChevronLeft, ChevronRight, LogOut, Menu,
 } from 'lucide-react'
 import { useApp } from '../../store/AppContext'
@@ -15,6 +15,7 @@ const menuItems = [
   { to: '/admin/user', label: 'Kelola User', icon: Users },
   { to: '/admin/fasilitas', label: 'Kelola Fasilitas', icon: Building2 },
   { to: '/admin/galeri', label: 'Kelola Galeri', icon: Image },
+  { to: '/admin/pembayaran', label: 'Kelola Pembayaran', icon: CreditCard },
   { to: '/admin/slider', label: 'Kelola Slider', icon: Sliders },
   { to: '/admin/artikel', label: 'Kelola Artikel', icon: Newspaper },
   { to: '/admin/pesan', label: 'Kelola Pesan', icon: MessageSquare },

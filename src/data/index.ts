@@ -1,4 +1,4 @@
-import type { Lapangan, Booking, User, Jadwal, Fasilitas, Galeri, Artikel, Pesan, Pengaturan } from '../types'
+import type { Lapangan, Booking, User, Jadwal, Fasilitas, Galeri, Artikel, Pesan, Pengaturan, PaymentMethod } from '../types'
 
 export const fasilitasData: Fasilitas[] = [
   { id: 'f1', nama: 'Musholla', icon: 'Mosque', deskripsi: 'Musholla bersih dan nyaman untuk ibadah' },
@@ -81,6 +81,7 @@ export const bookingData: Booking[] = [
     totalHarga: 100000,
     status: 'confirmed',
     createdAt: '2026-05-28T10:00:00Z',
+    metodePembayaran: 'virtual_account',
   },
   {
     id: 'b2',
@@ -94,6 +95,7 @@ export const bookingData: Booking[] = [
     totalHarga: 240000,
     status: 'pending',
     createdAt: '2026-05-29T08:00:00Z',
+    metodePembayaran: 'qris',
   },
   {
     id: 'b3',
@@ -107,6 +109,7 @@ export const bookingData: Booking[] = [
     totalHarga: 400000,
     status: 'completed',
     createdAt: '2026-05-27T15:00:00Z',
+    metodePembayaran: 'cards',
   },
 ]
 
@@ -137,6 +140,21 @@ export const jenisLapanganList = [
   { jenis: 'Futsal Interlock', count: 2, icon: 'Futsal' },
   { jenis: 'Basketball Parkit Vinyl', count: 1, icon: 'Basket' },
 ] as const
+
+export const paymentMethodData: PaymentMethod[] = [
+  { id: 'pm1', metode: 'virtual_account', label: 'BCA Virtual Account', deskripsi: 'Transfer via BCA', noRekening: '88008123456789012', atasNama: 'Orion Sports Center', bankName: 'BCA', noEwallet: '', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 1 },
+  { id: 'pm2', metode: 'virtual_account', label: 'Mandiri Virtual Account', deskripsi: 'Transfer via Mandiri', noRekening: '19000123456789012', atasNama: 'Orion Sports Center', bankName: 'Mandiri', noEwallet: '', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 2 },
+  { id: 'pm3', metode: 'virtual_account', label: 'BNI Virtual Account', deskripsi: 'Transfer via BNI', noRekening: '9876543210987654', atasNama: 'Orion Sports Center', bankName: 'BNI', noEwallet: '', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 3 },
+  { id: 'pm4', metode: 'ewallet', label: 'GoPay', deskripsi: 'Pembayaran via GoPay', noRekening: '', atasNama: 'Orion Sports Center', bankName: '', noEwallet: '081234567890', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 4 },
+  { id: 'pm5', metode: 'ewallet', label: 'OVO', deskripsi: 'Pembayaran via OVO', noRekening: '', atasNama: 'Orion Sports Center', bankName: '', noEwallet: '081234567891', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 5 },
+  { id: 'pm6', metode: 'ewallet', label: 'Dana', deskripsi: 'Pembayaran via Dana', noRekening: '', atasNama: 'Orion Sports Center', bankName: '', noEwallet: '081234567892', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 6 },
+  { id: 'pm7', metode: 'ewallet', label: 'ShopeePay', deskripsi: 'Pembayaran via ShopeePay', noRekening: '', atasNama: 'Orion Sports Center', bankName: '', noEwallet: '081234567893', qrImage: '', kodeGerai: '', cardInfo: '', isActive: true, urutan: 7 },
+  { id: 'pm8', metode: 'retail', label: 'Indomaret', deskripsi: 'Bayar di Indomaret', noRekening: '', atasNama: '', bankName: '', noEwallet: '', qrImage: '', kodeGerai: 'ORION-1234-5678', cardInfo: '', isActive: true, urutan: 8 },
+  { id: 'pm9', metode: 'retail', label: 'Alfamart', deskripsi: 'Bayar di Alfamart', noRekening: '', atasNama: '', bankName: '', noEwallet: '', qrImage: '', kodeGerai: 'ORION-8765-4321', cardInfo: '', isActive: true, urutan: 9 },
+  { id: 'pm10', metode: 'retail', label: 'Pos Indonesia', deskripsi: 'Bayar di Pos Indonesia', noRekening: '', atasNama: '', bankName: '', noEwallet: '', qrImage: '', kodeGerai: 'ORION-1122-3344', cardInfo: '', isActive: true, urutan: 10 },
+  { id: 'pm11', metode: 'qris', label: 'QRIS', deskripsi: 'Scan QR dengan aplikasi pembayaran', noRekening: '', atasNama: '', bankName: '', noEwallet: '', qrImage: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ORION-SPORTS-CENTER', kodeGerai: '', cardInfo: '', isActive: true, urutan: 11 },
+  { id: 'pm12', metode: 'cards', label: 'Kartu Kredit/Debit', deskripsi: 'Visa / Mastercard', noRekening: '', atasNama: '', bankName: '', noEwallet: '', qrImage: '', kodeGerai: '', cardInfo: 'Pembayaran akan diproses setelah booking dikonfirmasi', isActive: true, urutan: 12 },
+]
 
 export const jamTersedia = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',

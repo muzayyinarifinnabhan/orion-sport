@@ -36,6 +36,10 @@ export default function KelolaBooking() {
     { key: 'jamMulai', header: 'Jam', sortable: true,
       render: (b: Booking) => `${b.jamMulai} - ${b.jamSelesai}` },
     { key: 'lapanganId', header: 'Lapangan', sortable: true },
+    { key: 'metodePembayaran', header: 'Pembayaran', sortable: true,
+      render: (b: Booking) => b.metodePembayaran
+        ? ({ virtual_account: 'Transfer Virtual Account', ewallet: 'E-Wallet', retail: 'Bayar di Gerai Retail', qris: 'QRIS', cards: 'Cards' })[b.metodePembayaran] ?? b.metodePembayaran
+        : '-' },
     { key: 'totalHarga', header: 'Total', sortable: true,
       render: (b: Booking) => `Rp ${b.totalHarga.toLocaleString()}` },
     { key: 'status', header: 'Status', sortable: true,

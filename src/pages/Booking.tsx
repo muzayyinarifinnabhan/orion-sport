@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { CalendarDays, Clock, MapPin, CheckCircle, ArrowRight, AlertCircle } from 'lucide-react'
+import { CalendarDays, Clock, MapPin, CheckCircle, ArrowRight, AlertCircle, CreditCard, Landmark, Wallet, Store, QrCode } from 'lucide-react'
 import ScrollReveal from '../components/ui/ScrollReveal'
 import { useToast } from '../components/ui/Toast'
 import { useApp } from '../store/AppContext'
 import { fetchAll, insertOne } from '../lib/db'
 import { jamTersedia as defaultJamTersedia } from '../data'
-import type { Jadwal } from '../types'
+import type { Jadwal, PaymentMethod } from '../types'
 
 const dayMap: Record<number, string> = {
   0: 'Minggu', 1: 'Senin', 2: 'Selasa', 3: 'Rabu', 4: 'Kamis', 5: 'Jumat', 6: 'Sabtu',
@@ -24,7 +24,7 @@ function generateJamSlots(jamBuka: string, jamTutup: string): string[] {
 }
 
 export default function Booking() {
-  const { lapangan: lapanganList, booking: bookingList, setBooking, jadwal: jadwalList, setJadwal } = useApp()
+  const { lapangan: lapanganList, booking: bookingList, setBooking, jadwal: jadwalList, setJadwal, paymentMethods } = useApp()
 
   useEffect(() => {
     fetchAll<Jadwal>('jadwal').then((data) => setJadwal(data))
@@ -37,6 +37,10 @@ export default function Booking() {
   const [email, setEmail] = useState('')
   const [telepon, setTelepon] = useState('')
   const [catatan, setCatatan] = useState('')
+  const [metodePembayaran, setMetodePembayaran] = useState('')
+  const [paymentPhase, setPaymentPhase] = useState<'select' | 'pay'>('select')
+  const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null)
+  const [buktiPreview, setBuktiPreview] = useState('')
   const [step, setStep] = useState(1)
   const { showToast } = useToast()
 
@@ -63,9 +67,26 @@ export default function Booking() {
 
   const totalHarga = lapangan ? lapangan.hargaPerJam * durasi : 0
 
-  const handleBooking = async () => {
-    if (!selectedLapangan || !tanggal || !jamMulai || !nama || !email || !telepon) {
+  const handleStartPayment = () => {
+    if (!metodePembayaran) return
+    setPaymentPhase('pay')
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setBuktiPembayaran(file)
+      setBuktiPreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleSubmitPayment = async () => {
+    if (!selectedLapangan || !tanggal || !jamMulai || !nama || !email || !telepon || !metodePembayaran) {
       showToast('Harap lengkapi semua data!', 'error')
+      return
+    }
+    if (!buktiPembayaran) {
+      showToast('Harap upload bukti pembayaran!', 'error')
       return
     }
     const jamSelesai = String(Number(jamMulai.split(':')[0]) + durasi).padStart(2, '0') + ':00'
@@ -82,10 +103,15 @@ export default function Booking() {
       status: 'confirmed',
       createdAt: new Date().toISOString(),
       catatan,
+      metodePembayaran,
     }
     await insertOne('booking', newBooking)
     setBooking([...bookingList, newBooking])
     showToast(`Booking berhasil! Total: Rp ${totalHarga.toLocaleString()}`, 'success')
+    setStep(5)
+  }
+
+  const resetForm = () => {
     setSelectedLapangan('')
     setTanggal('')
     setJamMulai('')
@@ -93,6 +119,10 @@ export default function Booking() {
     setEmail('')
     setTelepon('')
     setCatatan('')
+    setMetodePembayaran('')
+    setPaymentPhase('select')
+    setBuktiPembayaran(null)
+    setBuktiPreview('')
     setStep(1)
   }
 
@@ -110,7 +140,7 @@ export default function Booking() {
 
         {/* Steps */}
         <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10">
-          {['Pilih Lapangan', 'Pilih Jadwal', 'Lengkapi Data', 'Konfirmasi'].map((label, i) => (
+          {['Pilih Lapangan', 'Pilih Jadwal', 'Lengkapi Data', 'Pembayaran', 'Konfirmasi'].map((label, i) => (
             <div key={label} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
                 step > i + 1 ? 'bg-emerald-500 text-white' :
@@ -122,7 +152,7 @@ export default function Booking() {
               <span className={`text-sm hidden sm:block ${step === i + 1 ? 'text-gray-900' : 'text-gray-400'}`}>
                 {label}
               </span>
-              {i < 3 && <div className="w-6 sm:w-12 h-px bg-gray-200" />}
+              {i < 4 && <div className="w-6 sm:w-12 h-px bg-gray-200" />}
             </div>
           ))}
         </div>
@@ -313,48 +343,329 @@ export default function Booking() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
               >
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <CheckCircle size={20} className="text-emerald-500" /> Konfirmasi Booking
-                </h2>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between py-2 border-b border-gray-100">
+                {paymentPhase === 'select' ? (
+                  <>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                      <CreditCard size={20} className="text-violet-600" /> Pembayaran
+                    </h2>
+                    <div className="space-y-4">
+                      <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                        <div className="text-sm text-gray-600 mb-1">Total Pembayaran</div>
+                        <div className="text-2xl font-bold text-amber-600">Rp {totalHarga.toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-3">Metode Pembayaran</label>
+                        <div className="space-y-2">
+                          {(() => {
+                         const metodeConfig = [
+                          { id: 'virtual_account', label: 'Transfer Virtual Account', icon: Landmark, defaultDesc: 'BCA / Mandiri / BNI' },
+                          { id: 'ewallet', label: 'E-Wallet', icon: Wallet, defaultDesc: 'GoPay / OVO / Dana / ShopeePay' },
+                          { id: 'retail', label: 'Bayar di Gerai Retail', icon: Store, defaultDesc: 'Indomaret / Alfamart / Pos Indonesia' },
+                          { id: 'qris', label: 'QRIS', icon: QrCode, defaultDesc: 'Scan QR menggunakan aplikasi pembayaran' },
+                          { id: 'cards', label: 'Cards', icon: CreditCard, defaultDesc: 'Kartu Kredit / Debit (Visa / Mastercard)' },
+                        ]
+                        const activeMethods = paymentMethods.filter((p) => p.isActive)
+                        return metodeConfig.map((mc) => {
+                          const items = activeMethods.filter((p) => p.metode === mc.id)
+                          const Icon = mc.icon
+                          return (
+                            <button
+                              key={mc.id}
+                              onClick={() => setMetodePembayaran(mc.id)}
+                              className={`w-full text-left p-4 rounded-xl border transition-all ${
+                                metodePembayaran === mc.id
+                                  ? 'border-violet-300 bg-violet-50'
+                                  : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                                  metodePembayaran === mc.id ? 'bg-violet-100 text-violet-600' : 'bg-gray-100 text-gray-500'
+                                }`}>
+                                  <Icon size={20} />
+                                </div>
+                                <div>
+                                  <div className="font-medium text-gray-900">{mc.label}</div>
+                                  <div className="text-sm text-gray-500">{items.length > 0 ? items.map((i) => i.label).join(' / ') : mc.defaultDesc}</div>
+                                </div>
+                              </div>
+                            </button>
+                          )
+                        })
+                      })()}
+                        </div>
+                      </div>
+                    </div>
+                    {metodePembayaran && (
+                      <div className="bg-violet-50 rounded-xl p-4 border border-violet-200 mt-4">
+                        <div className="text-sm text-violet-600 mb-1">Siap melakukan pembayaran?</div>
+                        <div className="text-lg font-bold text-violet-800">Rp {totalHarga.toLocaleString()}</div>
+                      </div>
+                    )}
+                    <div className="mt-6 flex justify-between">
+                      <button onClick={() => setStep(3)} className="px-6 py-2.5 rounded-xl text-gray-500 hover:text-gray-700 transition-colors">
+                        Kembali
+                      </button>
+                      {metodePembayaran ? (
+                        <button
+                          onClick={handleStartPayment}
+                          className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold hover:from-emerald-400 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-200 text-base"
+                        >
+                          Bayar Sekarang <ArrowRight size={20} />
+                        </button>
+                      ) : (
+                        <span className="text-sm text-gray-400 italic">Pilih metode pembayaran terlebih dahulu</span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                      <CreditCard size={20} className="text-violet-600" /> Pembayaran
+                    </h2>
+                    <div className="bg-amber-50 rounded-xl p-4 border border-amber-200 mb-4">
+                      <div className="text-sm text-gray-600 mb-1">Total Pembayaran</div>
+                      <div className="text-2xl font-bold text-amber-600">Rp {totalHarga.toLocaleString()}</div>
+                    </div>
+
+                    {/* Payment Instructions by Method */}
+                    {(() => {
+                      const items = paymentMethods.filter((p) => p.isActive && p.metode === metodePembayaran)
+
+                      if (metodePembayaran === 'qris') {
+                        const qr = items[0]
+                        return (
+                          <div className="text-center mb-4">
+                            <div className="inline-block bg-white rounded-2xl p-4 border border-gray-200 shadow-sm mb-3">
+                              <div className="w-48 h-48 bg-white rounded-xl flex items-center justify-center">
+                                {qr?.qrImage ? (
+                                  <img src={qr.qrImage} alt="QRIS" className="w-full h-full object-contain" />
+                                ) : (
+                                  <svg viewBox="0 0 200 200" className="w-48 h-48">
+                                    <rect width="200" height="200" fill="white" rx="8" />
+                                    <rect x="4" y="4" width="40" height="40" fill="white" rx="4" stroke="black" strokeWidth="3" />
+                                    <rect x="6" y="6" width="36" height="36" fill="black" rx="2" />
+                                    <rect x="10" y="10" width="28" height="28" fill="white" rx="1" />
+                                    <rect x="14" y="14" width="20" height="20" fill="black" />
+                                    <rect x="156" y="4" width="40" height="40" fill="white" rx="4" stroke="black" strokeWidth="3" />
+                                    <rect x="158" y="6" width="36" height="36" fill="black" rx="2" />
+                                    <rect x="162" y="10" width="28" height="28" fill="white" rx="1" />
+                                    <rect x="166" y="14" width="20" height="20" fill="black" />
+                                    <rect x="4" y="156" width="40" height="40" fill="white" rx="4" stroke="black" strokeWidth="3" />
+                                    <rect x="6" y="158" width="36" height="36" fill="black" rx="2" />
+                                    <rect x="10" y="162" width="28" height="28" fill="white" rx="1" />
+                                    <rect x="14" y="166" width="20" height="20" fill="black" />
+                                    <rect x="50" y="48" width="100" height="4" fill="black" rx="2" />
+                                    <rect x="48" y="50" width="4" height="100" fill="black" rx="2" />
+                                    {Array.from({ length: 12 }, (_, r) =>
+                                      Array.from({ length: 12 }, (_, c) => {
+                                        const fill = ((r * 13 + c * 7 + (r + c) * 3) % 4 !== 0).toString() === 'true' ? 'black' : 'white'
+                                        return <rect key={`${r}-${c}`} x={60 + c * 7} y={60 + r * 7} width={3} height={3} fill={fill} rx={0.5} />
+                                      })
+                                    )}
+                                    <rect x="52" y="148" width="96" height="3" fill="black" rx={1} />
+                                    <rect x="82" y="82" width="36" height="36" fill="white" rx="6" stroke="black" strokeWidth="2" />
+                                    <text x="100" y="103" textAnchor="middle" fill="black" fontSize="10" fontWeight="bold">QR</text>
+                                  </svg>
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600">{qr?.deskripsi || 'Scan QR code di atas menggunakan aplikasi pembayaran'}</p>
+                          </div>
+                        )
+                      }
+
+                      if (metodePembayaran === 'virtual_account') {
+                        return (
+                          <div className="space-y-3 mb-4">
+                            {items.length > 0 ? items.map((item) => (
+                              <div key={item.id} className="bg-white rounded-xl p-4 border border-gray-200">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-sm text-gray-500">{item.bankName || item.label}</span>
+                                  {item.atasNama && <span className="text-xs text-gray-400">a.n. {item.atasNama}</span>}
+                                </div>
+                                <div className="text-lg font-bold text-gray-900 tracking-wider">{item.noRekening}</div>
+                              </div>
+                            )) : (
+                              <>
+                                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                                  <div className="text-sm text-gray-500 mb-1">BCA Virtual Account</div>
+                                  <div className="text-lg font-bold text-gray-900 tracking-wider">88008 1234 5678 9012</div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                                  <div className="text-sm text-gray-500 mb-1">Mandiri Virtual Account</div>
+                                  <div className="text-lg font-bold text-gray-900 tracking-wider">19000 1234 5678 9012</div>
+                                </div>
+                              </>
+                            )}
+                            <p className="text-xs text-gray-400 text-center">Transfer sesuai nominal total pembayaran</p>
+                          </div>
+                        )
+                      }
+
+                      if (metodePembayaran === 'ewallet') {
+                        return (
+                          <div className="space-y-3 mb-4">
+                            {items.length > 0 ? items.map((item) => (
+                              <div key={item.id} className="bg-white rounded-xl p-4 border border-gray-200 flex items-center justify-between">
+                                <div>
+                                  <div className="font-medium text-gray-900">{item.label}</div>
+                                  {item.atasNama && <div className="text-xs text-gray-400">a.n. {item.atasNama}</div>}
+                                </div>
+                                <div className="text-lg font-bold text-gray-900 tracking-wider">{item.noEwallet}</div>
+                              </div>
+                            )) : (
+                              <>
+                                <div className="flex justify-center gap-3 flex-wrap">
+                                  {['GoPay', 'OVO', 'Dana', 'ShopeePay'].map((ew) => (
+                                    <div key={ew} className="bg-white rounded-xl px-4 py-2 border border-gray-200 text-sm font-medium text-gray-700">{ew}</div>
+                                  ))}
+                                </div>
+                                <p className="text-sm text-gray-500 text-center">Buka aplikasi dan lakukan pembayaran ke nomor terdaftar Orion Sports Center</p>
+                              </>
+                            )}
+                          </div>
+                        )
+                      }
+
+                      if (metodePembayaran === 'retail') {
+                        return (
+                          <div className="space-y-3 mb-4">
+                            {items.length > 0 ? items.map((item) => (
+                              <div key={item.id} className="bg-white rounded-xl p-4 border border-gray-200 flex items-center justify-between">
+                                <div className="font-medium text-gray-900">{item.label}</div>
+                                <div className="text-lg font-bold text-gray-900 tracking-wider">{item.kodeGerai}</div>
+                              </div>
+                            )) : (
+                              <>
+                                <div className="flex justify-center gap-3 flex-wrap">
+                                  {['Indomaret', 'Alfamart', 'Pos Indonesia'].map((r) => (
+                                    <div key={r} className="bg-white rounded-xl px-4 py-2 border border-gray-200 text-sm font-medium text-gray-700">{r}</div>
+                                  ))}
+                                </div>
+                                <div className="bg-white rounded-xl p-4 border border-gray-200 inline-block">
+                                  <div className="text-sm text-gray-500 mb-1">Kode Pembayaran</div>
+                                  <div className="text-lg font-bold text-gray-900 tracking-wider">ORION {Date.now().toString().slice(-8)}</div>
+                                </div>
+                                <p className="text-sm text-gray-500 text-center">Tunjukkan kode pembayaran ke kasir</p>
+                              </>
+                            )}
+                          </div>
+                        )
+                      }
+
+                      if (metodePembayaran === 'cards') {
+                        const card = items[0]
+                        return (
+                          <div className="text-center mb-4">
+                            <div className="bg-white rounded-xl p-4 border border-gray-200 inline-block">
+                              <CreditCard size={32} className="text-violet-600 mx-auto mb-2" />
+                              <p className="text-sm text-gray-600">{card?.cardInfo || 'Pembayaran melalui kartu kredit/debit akan diproses setelah booking dikonfirmasi'}</p>
+                            </div>
+                          </div>
+                        )
+                      }
+                      return null
+                    })()}
+
+                    {/* Upload Bukti Pembayaran */}
+                    <div className="border-t border-gray-200 pt-4 mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Upload Bukti Pembayaran
+                      </label>
+                      {buktiPreview ? (
+                        <div className="space-y-3">
+                          <div className="relative inline-block rounded-xl overflow-hidden border border-gray-200">
+                            <img src={buktiPreview} alt="Bukti Pembayaran" className="max-h-48 object-contain" />
+                            <button
+                              onClick={() => { setBuktiPembayaran(null); setBuktiPreview('') }}
+                              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <p className="text-xs text-gray-400">File: {buktiPembayaran?.name}</p>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50/30 transition-all">
+                          <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                          <div className="text-gray-400 text-center">
+                            <svg className="mx-auto h-10 w-10 mb-2" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <p className="text-sm">Klik untuk upload screenshot bukti transfer</p>
+                            <p className="text-xs mt-1">Format: JPG, PNG (max 5MB)</p>
+                          </div>
+                        </label>
+                      )}
+                    </div>
+
+                    <div className="mt-6 flex justify-between">
+                      <button onClick={() => setPaymentPhase('select')} className="px-6 py-2.5 rounded-xl text-gray-500 hover:text-gray-700 transition-colors">
+                        Kembali
+                      </button>
+                      <button
+                        disabled={!buktiPembayaran}
+                        onClick={handleSubmitPayment}
+                        className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold hover:from-emerald-400 hover:to-emerald-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-emerald-200 text-base"
+                      >
+                        Kirim <ArrowRight size={20} />
+                      </button>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            )}
+
+            {step === 5 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+              >
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle size={32} className="text-emerald-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Booking Berhasil!</h2>
+                  <p className="text-gray-500 mt-1">Pembayaran telah dikonfirmasi</p>
+                </div>
+                <div className="space-y-3 text-sm bg-gray-50 rounded-xl p-4">
+                  <div className="flex justify-between py-1">
                     <span className="text-gray-500">Lapangan</span>
                     <span className="text-gray-900 font-medium">{lapangan?.nama || '-'}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
+                  <div className="flex justify-between py-1">
                     <span className="text-gray-500">Tanggal</span>
                     <span className="text-gray-900 font-medium">{tanggal || '-'}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
+                  <div className="flex justify-between py-1">
                     <span className="text-gray-500">Jam</span>
                     <span className="text-gray-900 font-medium">{jamMulai} - {String(Number(jamMulai.split(':')[0]) + durasi).padStart(2, '0')}:00</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
+                  <div className="flex justify-between py-1">
                     <span className="text-gray-500">Durasi</span>
                     <span className="text-gray-900 font-medium">{durasi} Jam</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-500">Nama</span>
+                  <div className="flex justify-between py-1">
+                    <span className="text-gray-500">Pemesan</span>
                     <span className="text-gray-900 font-medium">{nama}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-500">Email</span>
-                    <span className="text-gray-900 font-medium">{email}</span>
+                  <div className="flex justify-between py-1">
+                    <span className="text-gray-500">Pembayaran</span>
+                    <span className="text-gray-900 font-medium">{metodePembayaran === 'virtual_account' ? 'Transfer Virtual Account' : metodePembayaran === 'ewallet' ? 'E-Wallet' : metodePembayaran === 'retail' ? 'Bayar di Gerai Retail' : metodePembayaran === 'qris' ? 'QRIS' : metodePembayaran === 'cards' ? 'Cards' : '-'}</span>
                   </div>
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Total Harga</span>
+                  <div className="flex justify-between py-1 pt-2 border-t border-gray-200">
+                    <span className="text-gray-600 font-semibold">Total Dibayar</span>
                     <span className="text-amber-600 font-bold text-lg">Rp {totalHarga.toLocaleString()}</span>
                   </div>
                 </div>
-                <div className="mt-6 flex justify-between">
-                  <button onClick={() => setStep(3)} className="px-6 py-2.5 rounded-xl text-gray-500 hover:text-gray-700 transition-colors">
-                    Kembali
-                  </button>
+                <div className="mt-6 text-center">
                   <button
-                    onClick={handleBooking}
-                    className="inline-flex items-center gap-2 px-8 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium hover:from-amber-400 hover:to-amber-500 transition-all shadow-sm"
+                    onClick={resetForm}
+                    className="px-8 py-2.5 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-500 transition-all"
                   >
-                    Konfirmasi Booking <ArrowRight size={18} />
+                    Booking Lagi
                   </button>
                 </div>
               </motion.div>
@@ -391,6 +702,12 @@ export default function Booking() {
                     <div className="flex items-center gap-3">
                       <Clock size={16} className="text-violet-600" />
                       <span className="text-gray-700">{jamMulai} - {String(Number(jamMulai.split(':')[0]) + durasi).padStart(2, '0')}:00</span>
+                    </div>
+                  )}
+                  {metodePembayaran && (
+                    <div className="flex items-center gap-3">
+                      <CreditCard size={16} className="text-violet-600" />
+                      <span className="text-gray-700">{metodePembayaran === 'virtual_account' ? 'Transfer Virtual Account' : metodePembayaran === 'ewallet' ? 'E-Wallet' : metodePembayaran === 'retail' ? 'Bayar di Gerai Retail' : metodePembayaran === 'qris' ? 'QRIS' : metodePembayaran === 'cards' ? 'Cards' : metodePembayaran}</span>
                     </div>
                   )}
                   <div className="pt-3 border-t border-gray-200">

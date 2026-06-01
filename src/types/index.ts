@@ -23,6 +23,7 @@ export interface Booking {
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
   createdAt: string
   catatan?: string
+  metodePembayaran?: string
 }
 
 export interface User {
@@ -84,6 +85,22 @@ export interface Pesan {
   pesan: string
   createdAt: string
   dibaca: boolean
+}
+
+export interface PaymentMethod {
+  id: string
+  metode: string
+  label: string
+  deskripsi: string
+  noRekening: string
+  atasNama: string
+  bankName: string
+  noEwallet: string
+  qrImage: string
+  kodeGerai: string
+  cardInfo: string
+  isActive: boolean
+  urutan: number
 }
 
 export interface Pengaturan {

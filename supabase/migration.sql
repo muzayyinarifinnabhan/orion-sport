@@ -53,9 +53,14 @@ create table if not exists public.booking (
   total_harga numeric not null default 0,
   status text not null default 'pending' check (status in ('pending','confirmed','cancelled','completed')),
   created_at text not null,
-  catatan text default ''
+  catatan text default '',
+  metode_pembayaran text default ''
 );
 alter table public.booking enable row level security;
+do $$ begin
+  alter table public.booking add column if not exists metode_pembayaran text default '';
+exception when others then null;
+end $$;
 
 -- Jadwal
 create table if not exists public.jadwal (
@@ -117,6 +122,24 @@ create table if not exists public.pesan (
 );
 alter table public.pesan enable row level security;
 
+-- Payment Methods
+create table if not exists public.payment_method (
+  id text primary key,
+  metode text not null,
+  label text not null default '',
+  deskripsi text not null default '',
+  no_rekening text not null default '',
+  atas_nama text not null default '',
+  bank_name text not null default '',
+  no_ewallet text not null default '',
+  qr_image text not null default '',
+  kode_gerai text not null default '',
+  card_info text not null default '',
+  is_active boolean not null default true,
+  urutan integer not null default 0
+);
+alter table public.payment_method enable row level security;
+
 -- Slider (hero slides)
 create table if not exists public.slider (
   id text primary key,
@@ -136,7 +159,7 @@ do $$
 declare
   tbl text;
 begin
-  for tbl in select unnest(array['fasilitas','lapangan','users','booking','jadwal','galeri','artikel','pengaturan','pesan','slider'])
+  for tbl in select unnest(array['fasilitas','lapangan','users','booking','jadwal','galeri','artikel','pengaturan','pesan','slider','payment_method'])
   loop
     execute format('drop policy if exists "Public access" on public.%I', tbl);
     execute format('create policy "Public access" on public.%I using (true) with check (true)', tbl);
@@ -209,10 +232,10 @@ select l.id || '-minggu', l.id, 'Minggu', '08:00', '23:00' from public.lapangan 
 on conflict (id) do nothing;
 
 -- Booking
-insert into public.booking (id, lapangan_id, nama_pemesan, email, telepon, tanggal, jam_mulai, jam_selesai, total_harga, status, created_at) values
-  ('b1', 'badminton-1', 'Ahmad Rizki', 'ahmad@email.com', '081234567890', '2026-06-01', '09:00', '11:00', 100000, 'confirmed', '2026-05-28T10:00:00Z'),
-  ('b2', 'futsal-rumput-1', 'Budi Santoso', 'budi@email.com', '081234567891', '2026-06-01', '14:00', '16:00', 240000, 'pending', '2026-05-29T08:00:00Z'),
-  ('b3', 'basket-1', 'Dewi Lestari', 'dewi@email.com', '081234567892', '2026-06-02', '10:00', '12:00', 400000, 'completed', '2026-05-27T15:00:00Z')
+insert into public.booking (id, lapangan_id, nama_pemesan, email, telepon, tanggal, jam_mulai, jam_selesai, total_harga, status, created_at, metode_pembayaran) values
+  ('b1', 'badminton-1', 'Ahmad Rizki', 'ahmad@email.com', '081234567890', '2026-06-01', '09:00', '11:00', 100000, 'confirmed', '2026-05-28T10:00:00Z', 'virtual_account'),
+  ('b2', 'futsal-rumput-1', 'Budi Santoso', 'budi@email.com', '081234567891', '2026-06-01', '14:00', '16:00', 240000, 'pending', '2026-05-29T08:00:00Z', 'qris'),
+  ('b3', 'basket-1', 'Dewi Lestari', 'dewi@email.com', '081234567892', '2026-06-02', '10:00', '12:00', 400000, 'completed', '2026-05-27T15:00:00Z', 'cards')
 on conflict (id) do nothing;
 
 -- Galeri
@@ -237,6 +260,22 @@ insert into public.artikel (id, gambar, judul, konten, kategori, penulis, tangga
   ('a6', 'https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=600&q=80', 'Kompetisi Basket Antar SMA se-Jakarta', 'Orion Sports Center menjadi tuan rumah kompetisi basket antar SMA yang akan digelar bulan Juni.', 'Event', 'Admin Orion', '28 April 2026', '2026-04-28'),
   ('a7', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80', 'Program Latihan Badminton untuk Pemula', 'Ikuti program latihan badminton 4 minggu yang dirancang khusus untuk pemula.', 'Latihan', 'Admin Orion', '20 April 2026', '2026-04-20'),
   ('a8', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', 'Cara Merawat Sepatu Olahraga', 'Tips merawat sepatu olahraga agar awet dan tetap nyaman digunakan.', 'Tips', 'Admin Orion', '15 April 2026', '2026-04-15')
+on conflict (id) do nothing;
+
+-- Payment Methods
+insert into public.payment_method (id, metode, label, deskripsi, no_rekening, atas_nama, bank_name, no_ewallet, qr_image, kode_gerai, card_info, is_active, urutan) values
+  ('pm1', 'virtual_account', 'BCA Virtual Account', 'Transfer via BCA', '88008123456789012', 'Orion Sports Center', 'BCA', '', '', '', '', true, 1),
+  ('pm2', 'virtual_account', 'Mandiri Virtual Account', 'Transfer via Mandiri', '19000123456789012', 'Orion Sports Center', 'Mandiri', '', '', '', '', true, 2),
+  ('pm3', 'virtual_account', 'BNI Virtual Account', 'Transfer via BNI', '9876543210987654', 'Orion Sports Center', 'BNI', '', '', '', '', true, 3),
+  ('pm4', 'ewallet', 'GoPay', 'Pembayaran via GoPay', '', 'Orion Sports Center', '', '081234567890', '', '', '', true, 4),
+  ('pm5', 'ewallet', 'OVO', 'Pembayaran via OVO', '', 'Orion Sports Center', '', '081234567891', '', '', '', true, 5),
+  ('pm6', 'ewallet', 'Dana', 'Pembayaran via Dana', '', 'Orion Sports Center', '', '081234567892', '', '', '', true, 6),
+  ('pm7', 'ewallet', 'ShopeePay', 'Pembayaran via ShopeePay', '', 'Orion Sports Center', '', '081234567893', '', '', '', true, 7),
+  ('pm8', 'retail', 'Indomaret', 'Bayar di Indomaret terdekat', '', '', '', '', '', 'ORION-1234-5678', '', true, 8),
+  ('pm9', 'retail', 'Alfamart', 'Bayar di Alfamart terdekat', '', '', '', '', '', 'ORION-8765-4321', '', true, 9),
+  ('pm10', 'retail', 'Pos Indonesia', 'Bayar di kantor Pos', '', '', '', '', '', 'ORION-1122-3344', '', true, 10),
+  ('pm11', 'qris', 'QRIS', 'Scan QR dengan aplikasi pembayaran', '', '', '', '', 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=ORION-SPORTS-CENTER', '', '', true, 11),
+  ('pm12', 'cards', 'Kartu Kredit/Debit', 'Visa / Mastercard', '', '', '', '', '', '', 'Pembayaran akan diproses setelah booking dikonfirmasi', true, 12)
 on conflict (id) do nothing;
 
 -- Pengaturan (single row)
